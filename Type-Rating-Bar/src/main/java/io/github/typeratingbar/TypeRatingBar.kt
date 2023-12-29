@@ -2,6 +2,7 @@ package io.github.typeratingbar
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
@@ -14,41 +15,61 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.setPadding
+import java.time.format.TextStyle
 
 class TypeRatingBar(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
 
     private val DF_TOTAL_TICKS = 5
     private val DF_DEFAULT_TICKS = 3
-    private val DF_SIZE=R.dimen.trb_drawable_tick_default_star_size
-    private val DF_STAR_TO_TEXT=R.dimen.trb_drawable_tick_default_star_to_text_view_size
+    private val DF_SIZE=R.dimen.trb_drawable_star_default_star_size
+    private val DF_STAR_TO_TEXT=R.dimen.trb_drawable_star_default_star_to_text_view_size
     private val DF_CLICKABLE = true
-    private val DF_SYMBOLIC_TICK_RES: Int = R.string.trb_default_symbolic_string
-    private val DF_SYMBOLIC_TEXT_SIZE_RES: Int = R.dimen.trb_symbolic_tick_default_text_size
-    private val DF_SYMBOLIC_TEXT_STYLE = Typeface.NORMAL
-    private val DF_SYMBOLIC_TEXT_NORMAL_COLOR = Color.BLACK
-    private val DF_SYMBOLIC_TEXT_SELECTED_COLOR = Color.GRAY
-    private val DF_TICK_SPACING_RES: Int = R.dimen.trb_drawable_tick_default_spacing
+    private val DF_STAR_TICK_RES: Int = R.string.trb_default_text_string
+    private val DF_STAR_TEXT_SIZE_RES: Int = R.dimen.trb_symbolic_star_default_text_size
+    private val DF_STAR_TEXT_STYLE = Typeface.NORMAL
+    private val DF_STAR_TEXT_NORMAL_COLOR = Color.BLACK
+    private val DF_STAR_TEXT_SELECTED_COLOR = Color.GRAY
+    private val DF_STAR_NORMAL_DRAWABLE = R.drawable.ic_star_normal
+    private val DF_STAR_TINT_COLOR=R.color.trb_star_tint_color
+    private val DF_STAR_SELECTED_DRAWABLE=R.drawable.ic_star_selected
+    private val DF_TICK_SPACING_RES: Int = R.dimen.trb_drawable_star_default_spacing
     private val DF_RATING_BAR_TYPE=0
+    private val DF_PADDING_HORIZONTAL=R.dimen.trb_text_padding_horizontal
 
 
     private var totalTicks = 0
     private var lastSelectedTickIndex = 0
-    private var clickable = false
-    private var symbolicTick: String? = null
+    private var clickable = true
+    private var symbolicStar: String? = null
     private var customTextSize = 0
+    private var paddingHorizontal= 0
     private var customTextStyle = 0
     private var customTextNormalColor = 0
     private var customTextSelectedColor = 0
+    private var customStarTintColorStateList : ColorStateList? = null
     private var tickNormalDrawable: Drawable? = null
     private var tickSelectedDrawable: Drawable? = null
     private var tickSpacing = 0
     private var ratingBarType= 0
+
 
     private var useSymbolicTick = false
     private var rating = 0
     private var widthHeightSize=0
     private var starToTextViewSize=0
     private var listener: RatingListener? = null
+
+    fun setStarTintColor(colorStateList: ColorStateList){
+        customStarTintColorStateList=colorStateList
+        afterInit()
+    }
+
+    fun setStarTintColor(color: Int){
+        customStarTintColorStateList= ColorStateList.valueOf(color)
+        afterInit()
+    }
+
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.TypeRatingBar)
@@ -59,40 +80,55 @@ class TypeRatingBar(context: Context, attrs: AttributeSet) : LinearLayout(contex
         //
         clickable = a.getBoolean(R.styleable.TypeRatingBar_trb_clickable, DF_CLICKABLE)
         //
-        symbolicTick = a.getString(R.styleable.TypeRatingBar_trb_symbolicTick)
-        if (symbolicTick == null) symbolicTick = context.getString(DF_SYMBOLIC_TICK_RES)
+        symbolicStar = a.getString(R.styleable.TypeRatingBar_android_text)
+        if (symbolicStar == null) symbolicStar = context.getString(DF_STAR_TICK_RES)
         //
         customTextSize = a.getDimensionPixelSize(
             R.styleable.TypeRatingBar_android_textSize,
-            context.resources.getDimensionPixelOffset(DF_SYMBOLIC_TEXT_SIZE_RES)
+            context.resources.getDimensionPixelOffset(DF_STAR_TEXT_SIZE_RES)
         )
         customTextStyle =
-            a.getInt(R.styleable.TypeRatingBar_android_textStyle, DF_SYMBOLIC_TEXT_STYLE)
+            a.getInt(R.styleable.TypeRatingBar_android_textStyle, DF_STAR_TEXT_STYLE)
         customTextNormalColor = a.getColor(
-            R.styleable.TypeRatingBar_trb_symbolicTickNormalColor,
-            DF_SYMBOLIC_TEXT_NORMAL_COLOR
+            R.styleable.TypeRatingBar_trb_normalColor,
+            DF_STAR_TEXT_NORMAL_COLOR
         )
         customTextSelectedColor = a.getColor(
-            R.styleable.TypeRatingBar_trb_symbolicTickSelectedColor,
-            DF_SYMBOLIC_TEXT_SELECTED_COLOR
+            R.styleable.TypeRatingBar_trb_selectedColor,
+            DF_STAR_TEXT_SELECTED_COLOR
         )
         //
-        tickNormalDrawable = a.getDrawable(R.styleable.TypeRatingBar_trb_tickNormalDrawable)
-        tickSelectedDrawable = a.getDrawable(R.styleable.TypeRatingBar_trb_tickSelectedDrawable)
+
+        tickNormalDrawable = a.getDrawable(R.styleable.TypeRatingBar_trb_normalDrawable)
+        if(tickNormalDrawable==null)
+            tickNormalDrawable=context.resources.getDrawable(DF_STAR_NORMAL_DRAWABLE,null)
+
+        tickSelectedDrawable = a.getDrawable(R.styleable.TypeRatingBar_trb_selectedDrawable)
+        if(tickSelectedDrawable==null)
+            tickSelectedDrawable=context.resources.getDrawable(DF_STAR_SELECTED_DRAWABLE,null)
+
+
+        customStarTintColorStateList = ColorStateList.valueOf(a.getColor(
+            R.styleable.TypeRatingBar_trb_tint_color,
+            context.resources.getColor(DF_STAR_TINT_COLOR,null)
+        ))
+
         tickSpacing = a.getDimensionPixelOffset(
-            R.styleable.TypeRatingBar_trb_tickSpacing,
+            R.styleable.TypeRatingBar_trb_starSpacing,
             context.resources.getDimensionPixelOffset(DF_TICK_SPACING_RES)
         )
 
         starToTextViewSize = a.getDimensionPixelOffset(
-            R.styleable.TypeRatingBar_trb_starToTextSize,
+            R.styleable.TypeRatingBar_trb_bwStarAndTxt,
             context.resources.getDimensionPixelOffset(DF_STAR_TO_TEXT)
         )
 
         widthHeightSize = a.getDimensionPixelOffset(
-            R.styleable.TypeRatingBar_trb_totalSize,
+            R.styleable.TypeRatingBar_trb_totalWdAndHt,
             context.resources.getDimensionPixelOffset(DF_SIZE)
         )
+
+        paddingHorizontal= a.getDimensionPixelOffset(R.styleable.TypeRatingBar_android_paddingHorizontal,context.resources.getDimensionPixelOffset(DF_PADDING_HORIZONTAL))
 
         afterInit()
 
@@ -122,10 +158,12 @@ class TypeRatingBar(context: Context, attrs: AttributeSet) : LinearLayout(contex
 //        }
         when(ratingBarType){
             0 -> {
+                useSymbolicTick=true
                 addSymbolicTick(context, position)
             }
 
             1 -> {
+                useSymbolicTick=false
                 addDrawableTick(context, position)
             }
         }
@@ -133,8 +171,9 @@ class TypeRatingBar(context: Context, attrs: AttributeSet) : LinearLayout(contex
 
     private fun addSymbolicTick(context: Context, position: Int) {
         val tv = TextView(context)
-        tv.text = symbolicTick
-        tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, customTextSize.toFloat())
+        tv.text = symbolicStar
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, customTextSize.toFloat())
+        tv.setPadding(paddingHorizontal)
         if (customTextStyle != 0) {
             tv.setTypeface(Typeface.DEFAULT, customTextStyle)
         }
@@ -152,6 +191,7 @@ class TypeRatingBar(context: Context, attrs: AttributeSet) : LinearLayout(contex
         vertialLinearLayout.orientation=VERTICAL
         val iv = ImageView(context)
         iv.layoutParams= LayoutParams(widthHeightSize,widthHeightSize)
+        iv.imageTintList= customStarTintColorStateList
         iv.layoutParams= LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         updateTicksClickParameters(iv, position)
         vertialLinearLayout.addView(iv)
@@ -239,6 +279,8 @@ class TypeRatingBar(context: Context, attrs: AttributeSet) : LinearLayout(contex
                         iterator.onTick(checkViews2, i)
                     }
                 }
+            }else if(checkView is TextView){
+                iterator.onTick(checkView,i)
             }
         }
     }
@@ -361,12 +403,64 @@ class TypeRatingBar(context: Context, attrs: AttributeSet) : LinearLayout(contex
         redrawTicks()
     }
 
-    fun setSymbolicTick(tick: String?) {
-        symbolicTick = tick
+    fun setSymbolicStar(tick: String?) {
+        symbolicStar = tick
         afterInit()
     }
 
     fun getSymbolicTick(): String? {
-        return symbolicTick
+        return symbolicStar
+    }
+
+    fun setRatingBarType(type : Int){
+        ratingBarType=type
+        afterInit()
+    }
+
+    fun setTotalStar(totalStar : Int){
+        this.totalTicks=totalStar
+        afterInit()
+    }
+
+    fun getTotalStar() : Int = totalTicks
+
+    fun setText(text : String){
+        symbolicStar=text
+        afterInit()
+    }
+
+    fun setTextSize(textSize : Int){
+        customTextSize=textSize
+        afterInit()
+    }
+
+    fun setTextNormalColor(textColor : Int){
+        customTextNormalColor=textColor
+        afterInit()
+    }
+
+    fun setTextSelectedColor(textColor : Int){
+        customTextSelectedColor=textColor
+        afterInit()
+    }
+
+    fun setTextStyle(textStyle: Int){
+        customTextStyle=textStyle
+        afterInit()
+    }
+
+    fun setDrawableNormalDrawable(drawable: Drawable?){
+        tickNormalDrawable=drawable
+        afterInit()
+    }
+
+    fun setDrawableSelectedDrawable(drawable: Drawable?){
+        tickSelectedDrawable=drawable
+        afterInit()
+    }
+
+    fun setHorizontalPadding(padding : Int){
+        paddingHorizontal=padding
+        afterInit()
     }
 }

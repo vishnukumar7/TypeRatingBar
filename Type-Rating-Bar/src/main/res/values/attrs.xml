@@ -9,10 +9,10 @@
         <attr name="trb_type" format="integer" />
 
         <!-- Total Size of in-between stars       -->
-        <attr name="trb_totalSize" format="dimension" />
+        <attr name="trb_totalWdAndHt" format="dimension" />
 
         <!-- -->
-        <attr name="trb_starToTextSize" format="dimension" />
+        <attr name="trb_bwStarAndTxt" format="dimension" />
         <!-- Use this to set rating from xml. Default is '3' -->
         <attr name="trb_defaultRating" format="integer" />
 
@@ -21,29 +21,36 @@
 
 
         <!-- Symbol to be used as a tick. Default is '$' -->
-        <attr name="trb_symbolicTick" format="string" />
+        <attr name="android:text" />
 
         <!-- Text size of symbolic tick. Default is '15sp' -->
         <attr name="android:textSize" />
+
+        <attr name="android:paddingHorizontal"/>
 
         <!-- Text style of symbolic tick. Possible: 'bold', 'italic', 'normal'. Default is 'normal'. -->
         <attr name="android:textStyle" />
 
         <!-- Color of symbolic tick that is not selected (not rated). Default is '#FF000000' (black). -->
-        <attr name="trb_symbolicTickNormalColor" format="reference|color" />
+        <attr name="trb_normalColor" format="reference|color" />
+
+        <attr name="trb_tint_color" format="reference|color" />
 
         <!-- Color of symbolic tick that is selected (rated). Default is '#FF888888' (gray). -->
-        <attr name="trb_symbolicTickSelectedColor" format="reference|color" />
+        <attr name="trb_selectedColor" format="reference|color" />
 
 
         <!-- Drawable resource to use as a tick that is not selected (not rated). No default value. -->
-        <attr name="trb_tickNormalDrawable" format="reference" />
+        <attr name="trb_normalDrawable" format="reference" />
 
         <!-- Drawable resource to use as a tick that is selected (rated). No default value. -->
-        <attr name="trb_tickSelectedDrawable" format="reference" />
+        <attr name="trb_selectedDrawable" format="reference" />
 
         <!-- Margin to be applied to tick drawables. Only applies to drawable-type ticks. Default is '1dp' (gray). -->
-        <attr name="trb_tickSpacing" format="dimension" />
+        <attr name="trb_starSpacing" format="dimension" />
+
+
+
     </declare-styleable>
 
     <item name="trb_tick_tag_id" type="id" />

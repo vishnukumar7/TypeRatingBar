@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="trb_symbolic_tick_default_text_size">15sp</dimen>
-    <dimen name="trb_drawable_tick_default_spacing">10dp</dimen>
-    <dimen name="trb_drawable_tick_default_star_to_text_view_size">50dp</dimen>
-    <dimen name="trb_drawable_tick_default_star_size">100dp</dimen>
+    <dimen name="trb_symbolic_star_default_text_size">20sp</dimen>
+    <dimen name="trb_drawable_star_default_spacing">5dp</dimen>
+    <dimen name="trb_drawable_star_default_star_to_text_view_size">30dp</dimen>
+    <dimen name="trb_drawable_star_default_star_size">10dp</dimen>
+    <dimen name="trb_text_padding_horizontal">0dp</dimen>
 </resources>
