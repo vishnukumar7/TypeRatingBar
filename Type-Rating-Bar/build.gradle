@@ -49,7 +49,7 @@ afterEvaluate {
 
                 groupId ='com.github.vishnukumar7'
                 artifactId ='type-rating-bar'
-                version = '1.0.0-beta1.0'
+                version = '1.0.1'
             }
         }
     }
