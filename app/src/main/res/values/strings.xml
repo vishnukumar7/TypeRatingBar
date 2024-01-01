@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SampleRatingApplication</string>
+    <string name="type_0_text_type_view">Type 0(Text Type View)</string>
+    <string name="type_1_image_type_view">Type 1 (Image Type View)</string>
 </resources>

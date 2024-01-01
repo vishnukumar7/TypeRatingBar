@@ -8,11 +8,28 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:text="@string/type_0_text_type_view"
+        android:layout_height="wrap_content"/>
+
     <io.github.typeratingbar.TypeRatingBar
         android:id="@+id/type0"
         android:layout_width="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_height="wrap_content" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:text="@string/type_1_image_type_view"
+        android:layout_height="wrap_content"/>
+
 
     <io.github.typeratingbar.TypeRatingBar
         android:id="@+id/type1"

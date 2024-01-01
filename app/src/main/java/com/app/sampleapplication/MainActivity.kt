@@ -28,8 +28,8 @@ class MainActivity : AppCompatActivity() {
 
         type1RatingView = findViewById(R.id.type1)
         type1RatingView.setRatingBarType(RatingType.RATING_BAR_IMAGE_TYPE)
-        type1RatingView.setDrawableNormalDrawable(getDrawable(io.github.typeratingbar.R.drawable.ic_star_normal)) ///--> default normal image
-        type1RatingView.setDrawableSelectedDrawable(getDrawable(io.github.typeratingbar.R.drawable.ic_star_selected)) /// default selected image
+        type1RatingView.setDrawableNormalDrawable(getDrawable(io.github.typeratingbar.R.drawable.ic_star_normal)) ///--> default normal image or optional
+        type1RatingView.setDrawableSelectedDrawable(getDrawable(io.github.typeratingbar.R.drawable.ic_star_selected)) /// default selected image or optional
         type1RatingView.setStarTintColor(Color.BLACK)
         type1RatingView.setTotalStar(5)
         type1RatingView.setHorizontalPadding(5)
